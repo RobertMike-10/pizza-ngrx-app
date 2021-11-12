@@ -3,17 +3,17 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import 'rxjs/add/observable/throw';
+import { throwError } from 'rxjs';
 
 import { Topping } from '../models/topping.model';
 
 @Injectable()
 export class ToppingsService {
   constructor(private http: HttpClient) {}
-
+  baseUrl = 'http://localhost:3000';
   getToppings(): Observable<Topping[]> {
     return this.http
-      .get<Topping[]>(`/api/toppings`)
-      .pipe(catchError((error: any) => Observable.throw(error.json())));
+      .get<Topping[]>(`${this.baseUrl}/api/toppings`)
+      .pipe(catchError((error: any) => throwError(error.json())));
   }
 }
