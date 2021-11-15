@@ -36,9 +36,7 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
   this.pizzas$ =  this.store.select<any>(fromStore.getAllPizzas);
-  this.store.dispatch(new fromStore.LoadPizzas())
-    /*this.pizzaService.getPizzas().subscribe(pizzas => {
-      this.pizzas = pizzas;
-    });*/
+  //fire the action of load pizzas, at this point effects dispatch the http service
+  this.store.dispatch(new fromStore.LoadPizzas());
   }
 }

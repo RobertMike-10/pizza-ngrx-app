@@ -1,19 +1,20 @@
 import { state } from '@angular/animations';
 import { Pizza } from 'src/products/models/pizza.model';
 import {
+  LoadPizzasSuccess,
   LOAD_PIZZAS,
   LOAD_PIZZAS_FAIL,
   LOAD_PIZZAS_SUCCESS,
   PizzasAction,
 } from '../actions/pizzas.action';
 export interface PizzaState {
-  data: Pizza[];
+  entities: {[id:number]:Pizza};
   loaded: boolean;
   loading: boolean;
 }
 
 export const initialState: PizzaState = {
-  data: [],
+  entities: {},
   loaded: false,
   loading: false,
 };
@@ -27,7 +28,7 @@ export function reducer(
       return loadPizzas(state);
     }
     case LOAD_PIZZAS_SUCCESS: {
-      return loadPizzasSuccess(state);
+      return loadPizzasSuccess(state,action);
     }
     case LOAD_PIZZAS_FAIL: {
       return loadPizzasFail(state);
@@ -43,11 +44,20 @@ function loadPizzas(state: PizzaState): PizzaState {
   };
 }
 
-function loadPizzasSuccess(state: PizzaState): PizzaState {
+function loadPizzasSuccess(state: PizzaState, action:LoadPizzasSuccess): PizzaState {
+const pizzas = action.payload;
+const entities = pizzas.reduce((entities:{[id:number]:Pizza}, pizza:Pizza)=> {
+  return {
+    ...entities,
+    [pizza.id as number]: pizza,
+  };
+},{...state.entities,})
+
  return{
   ...state,
   loading: false,
-  loaded:true
+  loaded:true,
+  entities
  }
 }
 
@@ -61,5 +71,5 @@ function loadPizzasFail(state: PizzaState): PizzaState {
 
  export const getPizzasLoading =(state:PizzaState) => state.loading;
  export const getPizzasLoaded =(state:PizzaState) => state.loaded;
- export const getPizzas =(state:PizzaState) => state.data;
+ export const getPizzasEntities =(state:PizzaState) => state.entities;
 
