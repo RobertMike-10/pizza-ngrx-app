@@ -30,7 +30,7 @@ import { Observable } from 'rxjs';
   `,
 })
 export class ProductsComponent implements OnInit {
-  pizzas!: Pizza[];
+
   pizzas$!: Observable<Pizza[]>;
   constructor(private pizzaService: PizzasService, private store:Store<fromStore.ProductsState>) {}
 

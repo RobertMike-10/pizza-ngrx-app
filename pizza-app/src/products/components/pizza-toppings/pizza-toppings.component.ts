@@ -32,7 +32,7 @@ const PIZZA_TOPPINGS_ACCESSOR = {
   `,
 })
 export class PizzaToppingsComponent implements ControlValueAccessor {
-  @Input() toppings: Topping[] = [];
+  @Input() toppings: Topping[]| null = [];
 
   value: Topping[] = [];
 

@@ -44,6 +44,7 @@ function loadPizzas(state: PizzaState): PizzaState {
   };
 }
 
+//real mapping of the pizzas from back end
 function loadPizzasSuccess(state: PizzaState, action:LoadPizzasSuccess): PizzaState {
 const pizzas = action.payload;
 const entities = pizzas.reduce((entities:{[id:number]:Pizza}, pizza:Pizza)=> {

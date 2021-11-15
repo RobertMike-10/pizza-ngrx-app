@@ -89,8 +89,8 @@ import { Topping } from '../../models/topping.model';
 export class PizzaFormComponent implements OnChanges {
   exists = false;
 
-  @Input() pizza!: Pizza;
-  @Input() toppings!: Topping[];
+  @Input() pizza!: Pizza|null;
+  @Input() toppings!: Topping[]|null;
 
   @Output() selected = new EventEmitter<number[]>();
   @Output() create = new EventEmitter<Pizza>();
