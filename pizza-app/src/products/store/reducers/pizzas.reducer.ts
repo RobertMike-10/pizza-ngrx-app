@@ -1,12 +1,6 @@
 import { state } from '@angular/animations';
 import { Pizza } from 'src/products/models/pizza.model';
-import {
-  LoadPizzasSuccess,
-  LOAD_PIZZAS,
-  LOAD_PIZZAS_FAIL,
-  LOAD_PIZZAS_SUCCESS,
-  PizzasAction,
-} from '../actions/pizzas.action';
+import * as actions from '../actions/pizzas.action';
 export interface PizzaState {
   entities: {[id:number]:Pizza};
   loaded: boolean;
@@ -21,18 +15,23 @@ export const initialState: PizzaState = {
 
 export function reducer(
   state = initialState,
-  action: PizzasAction
+  action: actions.PizzasAction
 ): PizzaState {
   switch (action.type) {
-    case LOAD_PIZZAS: {
+    case actions.LOAD_PIZZAS: {
       return loadPizzas(state);
     }
-    case LOAD_PIZZAS_SUCCESS: {
+    case actions.LOAD_PIZZAS_SUCCESS: {
       return loadPizzasSuccess(state,action);
     }
-    case LOAD_PIZZAS_FAIL: {
+    case actions.LOAD_PIZZAS_FAIL: {
       return loadPizzasFail(state);
     }
+    case actions.UPDATE_PIZZA_SUCCESS:
+    case actions.CREATE_PIZZA_SUCCESS: {
+      return createPizzaSuccess(state,action);
+    }
+
   }
   return state;
 }
@@ -45,7 +44,7 @@ function loadPizzas(state: PizzaState): PizzaState {
 }
 
 //real mapping of the pizzas from back end
-function loadPizzasSuccess(state: PizzaState, action:LoadPizzasSuccess): PizzaState {
+function loadPizzasSuccess(state: PizzaState, action:actions.LoadPizzasSuccess): PizzaState {
 const pizzas = action.payload;
 const entities = pizzas.reduce((entities:{[id:number]:Pizza}, pizza:Pizza)=> {
   return {
@@ -69,6 +68,19 @@ function loadPizzasFail(state: PizzaState): PizzaState {
    loaded:false
   }
  }
+
+ function createPizzaSuccess(state: PizzaState,action:actions.CreatePizzaSuccess|actions.UpdatePizzaSuccess){
+   const pizza = action.payload;
+   const entities = {
+     ...state.entities,
+     [pizza.id as number]:pizza
+   }
+   return {
+     ...state,
+     entities
+   }
+ }
+
 
  export const getPizzasLoading =(state:PizzaState) => state.loading;
  export const getPizzasLoaded =(state:PizzaState) => state.loaded;
