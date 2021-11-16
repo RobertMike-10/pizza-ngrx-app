@@ -1,4 +1,5 @@
 import { state } from '@angular/animations';
+import { Statement } from '@angular/compiler';
 import { Pizza } from 'src/products/models/pizza.model';
 import * as actions from '../actions/pizzas.action';
 export interface PizzaState {
@@ -30,6 +31,9 @@ export function reducer(
     case actions.UPDATE_PIZZA_SUCCESS:
     case actions.CREATE_PIZZA_SUCCESS: {
       return createPizzaSuccess(state,action);
+    }
+    case actions.REMOVE_PIZZA_SUCCESS: {
+      return removePizzaSuccess(state,action);
     }
 
   }
@@ -79,6 +83,15 @@ function loadPizzasFail(state: PizzaState): PizzaState {
      ...state,
      entities
    }
+ }
+
+ function removePizzaSuccess(state: PizzaState,action:actions.RemovePizzaSuccess){
+  const pizza = action.payload;
+  const {[pizza.id as number]: removed, ...entities} =state.entities
+  return {
+    ...state,
+    entities
+  }
  }
 
 
