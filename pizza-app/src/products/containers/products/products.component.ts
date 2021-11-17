@@ -33,7 +33,7 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.pizzas$ = this.store.select<any>(fromStore.getAllPizzas);
     //fire the action of load pizzas, at this point effects dispatch the http service
-    this.store.dispatch(new fromStore.LoadPizzas());
+    //this.store.dispatch(new fromStore.LoadPizzas());
     this.store.dispatch(new fromStore.LoadToppings());
   }
 }

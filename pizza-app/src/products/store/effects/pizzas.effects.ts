@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as pizzaActions from '../actions/pizzas.action';
 import * as services from '../../services';
 import * as fromRoot from '../../../app/store';
 import { Pizza } from 'src/products/models/pizza.model';
+import { Router } from '@angular/router';
+import {Location} from '@angular/common';
 
 @Injectable()
 export class PizzasEffects {
   constructor(
     private actions$: Actions,
-    private pizzaService: services.PizzasService
+    private pizzaService: services.PizzasService,
+    private router: Router,
+    private location: Location
   ) {}
   //an action, when load pizzas fire the httpp service
   @Effect()
@@ -65,13 +69,21 @@ export class PizzasEffects {
   createPizzaSuccess$ = this.actions$.pipe(
     ofType(pizzaActions.CREATE_PIZZA_SUCCESS),
     map((action: pizzaActions.CreatePizzaSuccess) => action.payload),
-    map((pizza: Pizza) => new fromRoot.Go({ path: ['/products', pizza.id] }))
+    tap((pizza: Pizza) =>{
+      const path =  ['/products', pizza.id];
+      this.router.navigate(path);
+    })
   );
 
   @Effect()
   handlePizzaSuccess$ = this.actions$.pipe(
     ofType(pizzaActions.REMOVE_PIZZA_SUCCESS,pizzaActions.UPDATE_PIZZA_SUCCESS),
-    map((pizza: Pizza) => new fromRoot.Go({ path: ['/products'] })),
-    tap((result: any) => console.log("Working"))
+    take(1),
+    tap((pizza: Pizza) => {
+      const path =  ['/products'];
+      //console.log("Probando");
+      this.router.navigate(path);
+      ;})
+
   );
 }
