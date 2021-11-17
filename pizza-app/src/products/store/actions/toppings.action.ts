@@ -25,5 +25,6 @@ export class VisualiseToppings implements Action{
   constructor (public payload:number[]) {}
 }
 
+
 //action types
 export type ToppingsAction  = LoadToppings|LoadToppingsFail|LoadToppingsSuccess|VisualiseToppings;

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import * as pizzaActions from '../actions/pizzas.action';
 import * as services from '../../services';
-import { of } from 'rxjs';
+import * as fromRoot from '../../../app/store';
 import { Pizza } from 'src/products/models/pizza.model';
 
 @Injectable()
@@ -30,7 +31,7 @@ export class PizzasEffects {
     map((action: pizzaActions.CreatePizza) => action.payload),
     switchMap((pizza: Pizza) => {
       return this.pizzaService.createPizza(pizza).pipe(
-        map((pizza:Pizza) => new pizzaActions.CreatePizzaSuccess(pizza)),
+        map((pizza: Pizza) => new pizzaActions.CreatePizzaSuccess(pizza)),
         catchError((error: any) => of(new pizzaActions.CreatePizzaFail(error)))
       );
     })
@@ -42,7 +43,7 @@ export class PizzasEffects {
     map((action: pizzaActions.UpdatePizza) => action.payload),
     switchMap((pizza: Pizza) => {
       return this.pizzaService.updatePizza(pizza).pipe(
-        map((pizza:Pizza) => new pizzaActions.UpdatePizzaSuccess(pizza)),
+        map((pizza: Pizza) => new pizzaActions.UpdatePizzaSuccess(pizza)),
         catchError((error: any) => of(new pizzaActions.UpdatePizzaFail(error)))
       );
     })
@@ -58,5 +59,19 @@ export class PizzasEffects {
         catchError((error: any) => of(new pizzaActions.RemovePizzaFail(error)))
       );
     })
+  );
+
+  @Effect()
+  createPizzaSuccess$ = this.actions$.pipe(
+    ofType(pizzaActions.CREATE_PIZZA_SUCCESS),
+    map((action: pizzaActions.CreatePizzaSuccess) => action.payload),
+    map((pizza: Pizza) => new fromRoot.Go({ path: ['/products', pizza.id] }))
+  );
+
+  @Effect()
+  handlePizzaSuccess$ = this.actions$.pipe(
+    ofType(pizzaActions.REMOVE_PIZZA_SUCCESS,pizzaActions.UPDATE_PIZZA_SUCCESS),
+    map((pizza: Pizza) => new fromRoot.Go({ path: ['/products'] })),
+    tap((result: any) => console.log("Working"))
   );
 }
