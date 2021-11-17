@@ -7,6 +7,7 @@ import * as fromStore from '../../store';
 import { Observable } from 'rxjs';
 @Component({
   selector: 'products',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['products.component.scss'],
   template: `
     <div class="products">
@@ -33,7 +34,6 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.pizzas$ = this.store.select<any>(fromStore.getAllPizzas);
     //fire the action of load pizzas, at this point effects dispatch the http service
-    //this.store.dispatch(new fromStore.LoadPizzas());
-    this.store.dispatch(new fromStore.LoadToppings());
+
   }
 }

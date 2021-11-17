@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap, take, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as pizzaActions from '../actions/pizzas.action';
 import * as services from '../../services';
@@ -68,8 +68,10 @@ export class PizzasEffects {
   @Effect()
   createPizzaSuccess$ = this.actions$.pipe(
     ofType(pizzaActions.CREATE_PIZZA_SUCCESS),
-    map((action: pizzaActions.CreatePizzaSuccess) => action.payload),
-    tap((pizza: Pizza) =>{
+    distinctUntilChanged(),
+    //map((action: pizzaActions.CreatePizzaSuccess) => action.payload),
+    tap((action: pizzaActions.CreatePizzaSuccess) =>{
+      const pizza = action.payload;
       const path =  ['/products', pizza.id];
       this.router.navigate(path);
     })
@@ -78,7 +80,7 @@ export class PizzasEffects {
   @Effect()
   handlePizzaSuccess$ = this.actions$.pipe(
     ofType(pizzaActions.REMOVE_PIZZA_SUCCESS,pizzaActions.UPDATE_PIZZA_SUCCESS),
-    take(1),
+    distinctUntilChanged(),
     tap((pizza: Pizza) => {
       const path =  ['/products'];
       //console.log("Probando");
